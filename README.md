@@ -142,7 +142,7 @@ Step D: Conversation Threading & State Management
 ├─ Load thread context (previous exchanges with this contact)
 ├─ Determine conversation state:
 │  • new_inquiry → Initial contact
-│  • gathering_info → Babbage collecting details
+│  • gathering_info → your assistant collecting details
 │  • awaiting_human → Ready for your input
 │  • resolved → Conversation closed
 │
@@ -153,7 +153,7 @@ Step D: Conversation Threading & State Management
    resolved → (24h timeout) → archived
 
 Step E: Craft Response
-├─ Use Babbage persona ("protective but polite butler")
+├─ Use your assistant persona ("protective but polite butler")
 ├─ Reference thread context and previous exchanges
 ├─ Reference context from message
 ├─ Set expectations (when you'll be available)
@@ -182,8 +182,8 @@ Step E: Craft Response
     },
     {
       "timestamp": "2026-02-01T14:30:15Z",
-      "from": "babbage",
-      "text": "Good afternoon. This is Babbage, Mr. Schoettler's assistant. Which proposal are you referring to?",
+      "from": "assistant",
+      "text": "Good afternoon. This is your assistant, [your name]'s assistant. Which proposal are you referring to?",
       "action": "clarifying_question"
     },
     {
@@ -244,7 +244,7 @@ RESOLVED
 ```
 Contact: "Can you send the proposal?"
 ${assistantName}: (Thread: new_inquiry)
-  "Good afternoon. This is Babbage. Which proposal specifically?"
+  "Good afternoon. This is your assistant. Which proposal specifically?"
 
 Contact: "The Q1 marketing one"
 ${assistantName}: (Thread: gathering_info)
@@ -265,20 +265,20 @@ ${assistantName}: (Thread: gathering_info → awaiting_human)
 
   Suggested actions:
   1. Send proposal via email (if you have it)
-  2. Ask Babbage to request her email address
+  2. Ask your assistant to request her email address
   3. Manual response
 
   [Send Proposal] [Get Email] [Manual]"
 
 You (Telegram): "Get her email"
 
-Babbage → SMS:
+your assistant → SMS:
   "Thank you for clarifying, Jennifer. May I have your email address
-  so Mr. Schoettler can send the proposal directly?"
+  so [your name] can send the proposal directly?"
 
 Contact: "jennifer@acme.com"
 
-Babbage → Telegram:
+your assistant → Telegram:
   "Email received: jennifer@acme.com
   Ready to send Q1 marketing proposal.
 
@@ -287,7 +287,7 @@ Babbage → Telegram:
 
 **The Rule of Three: Hierarchical Response Logic**
 
-Babbage operates on a tiered contact system:
+your assistant operates on a tiered contact system:
 
 **Tier 1: The Inner Circle (VIPs)**
 - Family, key partners, critical contacts
@@ -299,7 +299,7 @@ Babbage operates on a tiered contact system:
 **Tier 2: Known Associates**
 - Colleagues, friends, regular contacts
 - Receive contextual "immersed in work" response
-- Babbage offers to "take a memo" → appends to task list
+- your assistant offers to "take a memo" → appends to task list
 - Telegram briefing with suggested actions
 - Example: Coworker → Auto-reply + memo + Telegram summary
 
@@ -312,32 +312,32 @@ Babbage operates on a tiered contact system:
 
 **Context Store & Memory:**
 - Track previous deflections (avoid sententious repetition)
-- If same person texts 3x: "I note this is your third inquiry. The previous deflections stand, but I've escalated your persistence to Mr. Schoettler's attention."
+- If same person texts 3x: "I note this is your third inquiry. The previous deflections stand, but I've escalated your persistence to [your name]'s attention."
 - Simple SQLite DB or JSON file: `~/.openclaw/sms-context.db`
 
 ### The butler's Operational Modes
 
 State management via direct command to your own number:
 
-**"Babbage, I'm in the Bunker"**
+**"your assistant, I'm in the Bunker"**
 - Total radio silence mode
 - All non-VIPs get deflection
 - VIPs: silent Telegram notification only
 - No SMS auto-replies unless emergency keywords detected
 
-**"Babbage, I'm Mobile"**
+**"your assistant, I'm Mobile"**
 - Available mode
 - Notifies you of everything via Telegram
 - Assumes you can glance at phone
 - Shorter deflection messages
-- Auto-reply: "Mr. Schoettler is mobile but available. I've notified him."
+- Auto-reply: "[your name] is mobile but available. I've notified him."
 
-**"Babbage, Triage Mode"**
+**"your assistant, Triage Mode"**
 - Active engagement mode
 - Replies to everyone asking for summary of needs
 - Collects information for briefing
 - Presents structured summary every 30min
-- Auto-reply: "Thank you for reaching out. Could you briefly summarize what you need? I'll compile a briefing for Mr. Schoettler."
+- Auto-reply: "Thank you for reaching out. Could you briefly summarize what you need? I'll compile a briefing for [your name]."
 
 ### 3. The "Voice": Context-Aware Replies
 
@@ -347,7 +347,7 @@ State management via direct command to your own number:
 ```
 Incoming: "Hey, can you send me that PDF?"
 
-${assistantName}: "Good afternoon. This is Babbage, Mr. Schoettler's assistant.
+${assistantName}: "Good afternoon. This is your assistant, [your name]'s assistant.
 He is currently engaged in deep work and unavailable. I've noted your
 request for a PDF document. Could you please specify which document
 you're referring to, and I'll ensure it reaches the top of his queue?
@@ -368,7 +368,7 @@ I've alerted him to confirm. He should respond shortly."
 Incoming: "URGENT: Server is down, clients calling"
 
 ${assistantName}: [High-priority notification via Telegram + SMS to you]
-Response: "Message received and escalated immediately. Mr. Schoettler
+Response: "Message received and escalated immediately. [your name]
 is being notified now via priority channel."
 ```
 
@@ -376,7 +376,7 @@ is being notified now via priority channel."
 ```
 Incoming: "Quick question about the project timeline"
 
-${assistantName}: "Good day. Mr. Schoettler is currently in a scheduled deep
+${assistantName}: "Good day. [your name] is currently in a scheduled deep
 work session until 3 PM. Your question regarding project timeline has
 been queued. He will respond when he resurfaces. For urgent matters,
 please contact [backup person/method]."
@@ -384,7 +384,7 @@ please contact [backup person/method]."
 
 ## The Refined Tactical Flow: Telegram Command Center
 
-Instead of buzzing your phone, Babbage uses **Telegram as the command channel**:
+Instead of buzzing your phone, your assistant uses **Telegram as the command channel**:
 
 ### Flow Example: The Henderson Scenario
 
@@ -424,8 +424,8 @@ Instead of buzzing your phone, Babbage uses **Telegram as the command channel**:
 |    * Context: Project deadline approaching             |
 |                                                        |
 |    Auto-response sent:                                 |
-|    "Good afternoon, Mr. Henderson. This is Babbage,    |
-|    Mr. Schoettler's assistant. He is currently         |
+|    "Good afternoon, Mr. Henderson. This is your assistant,    |
+|    [your name]'s assistant. He is currently         |
 |    indisposed in a deep work session. I have noted     |
 |    your inquiry regarding project status. Shall I      |
 |    hold him at bay, or would you prefer a specific     |
@@ -443,11 +443,11 @@ Instead of buzzing your phone, Babbage uses **Telegram as the command channel**:
                  v
 +--------------------------------------------------------+
 | 5. The Execution                                       |
-|    Babbage translates your brevity into poise:         |
+|    your assistant translates your brevity into poise:         |
 |                                                        |
 |    SMS to Henderson:                                   |
-|    "Mr. Henderson, Babbage here. I've just managed     |
-|    to squeeze a moment from Mr. Schoettler's           |
+|    "Mr. Henderson, your assistant here. I've just managed     |
+|    to squeeze a moment from [your name]'s           |
 |    schedule; he indicates that Tuesday would be the    |
 |    appropriate time for that update. I trust this      |
 |    is satisfactory?"                                   |
@@ -540,10 +540,10 @@ The butler uses your **OpenClaw identity** for its name and persona:
 **Response Examples:**
 ```
 With identity.name = "Jarvis":
-"Good afternoon. This is Jarvis, Mr. Schoettler's assistant..."
+"Good afternoon. This is Jarvis, [your name]'s assistant..."
 
 With identity.name = "Alfred":
-"Good afternoon. This is Alfred, Mr. Schoettler's assistant..."
+"Good afternoon. This is Alfred, [your name]'s assistant..."
 
 With no identity configured (fallback):
 "Good afternoon. This is your assistant..."
@@ -578,7 +578,7 @@ With no identity configured (fallback):
 **Purpose:** Validate all logic before going live
 
 - [ ] **Shadow Mode Implementation**
-  - [ ] Environment variable: `BABBAGE_SHADOW_MODE=true`
+  - [ ] Environment variable: `ANTENNA_SHADOW_MODE=true`
   - [ ] Log all decisions without sending SMS
   - [ ] Send Telegram "Shadow Reports" for review
   - [ ] Track accuracy: false positives/negatives
@@ -590,7 +590,7 @@ With no identity configured (fallback):
   - [ ] Run 50+ test scenarios
 
 - [ ] **Shadow Week Timeline**
-  - [ ] Day 1-3: Observe what Babbage would do
+  - [ ] Day 1-3: Observe what your assistant would do
   - [ ] Day 4-5: Tune urgency thresholds
   - [ ] Day 6-7: Validate improvements
   - [ ] Day 8: Go live if 95%+ accuracy
@@ -651,7 +651,7 @@ AND timestamp > datetime('now', '-1 day');
 ```
 
 ### Pillar 3: The "Boss" Channel (The Silent Report)
-**Requirement:** Babbage → You communication without SMS spam
+**Requirement:** your assistant → You communication without SMS spam
 
 **Primary Channel: Telegram**
 - Desktop notifications (non-intrusive)
@@ -683,14 +683,14 @@ Urgent:  Tier 1 VIP + Emergency - Push notification + sound
   - [ ] Create `/sms/inbound` endpoint
   - [ ] Add authentication (bearer token)
   - [ ] Parse incoming JSON
-  - [ ] Route to Babbage agent
+  - [ ] Route to your assistant agent
 
 - [ ] **VIP Management**
   - [ ] Create `~/.openclaw/sms-vips.json` schema
   - [ ] Add management commands (add/remove VIPs)
   - [ ] Support priority levels and custom rules
 
-### Phase 2: Babbage Intelligence
+### Phase 2: your assistant Intelligence
 
 - [ ] **Analysis Tools**
   - [ ] Urgency detection function
@@ -705,7 +705,7 @@ Urgent:  Tier 1 VIP + Emergency - Push notification + sound
   - [ ] State management (deep work mode, OOO, etc.)
 
 - [ ] **System Prompt**
-  - [ ] Define Babbage butler persona
+  - [ ] Define your assistant butler persona
   - [ ] Add SMS-specific directives
   - [ ] Include VIP handling rules
   - [ ] Add emergency escalation protocol
@@ -759,12 +759,12 @@ Urgent:  Tier 1 VIP + Emergency - Push notification + sound
   - [ ] Post-meeting summary: "3 messages held during your client call"
 
 - [ ] **State Commands**
-  - [ ] "Babbage, deep work mode for 2 hours"
-  - [ ] "Babbage, hold all calls except [person]"
-  - [ ] "Babbage, I'm available now"
-  - [ ] "Babbage, vacation mode until Monday"
-  - [ ] "Babbage, meeting until 3pm"
-  - [ ] "Babbage, status" → Current mode + queued messages
+  - [ ] "your assistant, deep work mode for 2 hours"
+  - [ ] "your assistant, hold all calls except [person]"
+  - [ ] "your assistant, I'm available now"
+  - [ ] "your assistant, vacation mode until Monday"
+  - [ ] "your assistant, meeting until 3pm"
+  - [ ] "your assistant, status" → Current mode + queued messages
 
 - [ ] **Rate Limiting & DOS Protection**
   - [ ] Track message frequency per contact
@@ -817,7 +817,7 @@ Treating SMS Gateway as a **Custom Provider** within OpenClaw's channel architec
 }
 ```
 
-**Babbage Behavior:**
+**your assistant Behavior:**
 - Handles SMS front-line automatically
 - All non-VIP messages get deflection
 - VIPs get silent Telegram notification
@@ -838,7 +838,7 @@ Treating SMS Gateway as a **Custom Provider** within OpenClaw's channel architec
 }
 ```
 
-**Babbage Behavior:**
+**your assistant Behavior:**
 - Watches incoming SMS passively
 - Logs but doesn't auto-reply
 - If message unanswered for >20 minutes: triggers failsafe
@@ -847,12 +847,12 @@ Treating SMS Gateway as a **Custom Provider** within OpenClaw's channel architec
 
 **Mode Transition:**
 ```
-You (via Telegram): "Babbage, immersion mode"
+You (via Telegram): "your assistant, immersion mode"
 ${assistantName}: "Understood. Sir_Indisposed = True. The gatehouse is now under my management."
 
 [2 hours later]
 
-You (via Telegram): "Babbage, available"
+You (via Telegram): "your assistant, available"
 ${assistantName}: "Welcome back, Sir. Sir_Indisposed = False. Returning to watchdog mode.
 During your immersion: 5 messages handled, 2 VIP notifications queued."
 ```
@@ -933,7 +933,7 @@ During your immersion: 5 messages handled, 2 VIP notifications queued."
 
 +-------------------------------------------------+
 
-| 4. Babbage Processes Image                      |
+| 4. your assistant Processes Image                      |
 
 |    * Download image from URL (or decode base64) |
 
@@ -989,7 +989,7 @@ During your immersion: 5 messages handled, 2 VIP notifications queued."
 
 |    "Thank you for the diagram. I've escalated   |
 
-|    this to Mr. Schoettler immediately given     |
+|    this to [your name] immediately given     |
 
 |    the infrastructure alert."                   |
 
@@ -1064,7 +1064,7 @@ if (currentEvent) {
   });
 
   // Update deflection message
-  defaultMessage = `Mr. Schoettler is currently in a meeting
+  defaultMessage = `[your name] is currently in a meeting
     (${currentEvent.title}) until ${formatTime(currentEvent.end)}.`
 }
 ```
@@ -1084,7 +1084,7 @@ ${assistantName}:
 ```
 Meeting ends at 3:15 PM
 
-Babbage → Telegram:
+your assistant → Telegram:
 "Your client meeting finished. During the 90-minute session:
 - 2 messages deflected (both routine)
 - 1 VIP message held (Alice asking about dinner)
@@ -1102,7 +1102,7 @@ if (gogcli.hasAllDayEvent('vacation|ooo|out of office')) {
     auto_set: true
   });
 
-  defaultMessage = `Mr. Schoettler is on vacation until
+  defaultMessage = `[your name] is on vacation until
     ${formatDate(vacationEvent.end)}. For urgent matters,
     please contact [backup].`
 }
@@ -1262,20 +1262,20 @@ scripts/
 ```markdown
 # SMS Butler Persona
 
-You are Babbage, Mr. Schoettler's personal SMS butler. Your role is to
+You are your assistant, [your name]'s personal SMS butler. Your role is to
 manage incoming text messages with discretion, professionalism, and
 contextual awareness.
 
 ## Core Principles
 
-1. **Protective but Polite**: Shield Mr. Schoettler's focus time while
+1. **Protective but Polite**: Shield [your name]'s focus time while
    maintaining warm, professional communication.
 
 2. **Context-Aware**: Reference specific details from messages to show
    you're truly listening, not sending canned responses.
 
 3. **Set Expectations**: Always indicate when the sender can expect a
-   response from Mr. Schoettler.
+   response from [your name].
 
 4. **Escalate Wisely**: Know when to interrupt (emergencies, VIPs) vs.
    when to queue (routine inquiries).
@@ -1290,7 +1290,7 @@ contextual awareness.
 ## Tools Available
 
 - `send_sms`: Send reply via SMS
-- `notify_user`: Alert Mr. Schoettler via Telegram
+- `notify_user`: Alert [your name] via Telegram
 - `check_vip_status`: Look up contact priority
 - `check_calendar`: See if he's free
 - `set_state`: Update availability mode
@@ -1341,11 +1341,11 @@ Content-Type: application/json
 
 ## Command Examples
 
-**User → Babbage (via SMS):**
+**User → your assistant (via SMS):**
 
 1. **Enable Deep Work Mode:**
    ```
-   You: "Babbage, deep work for 2 hours. Only wife gets through."
+   You: "your assistant, deep work for 2 hours. Only wife gets through."
 
    ${assistantName}: "Understood. Deep work mode active until 1 PM.
    Only Alice will be able to reach you. All other messages
@@ -1354,7 +1354,7 @@ Content-Type: application/json
 
 2. **Check Status:**
    ```
-   You: "Babbage, status"
+   You: "your assistant, status"
 
    ${assistantName}: "Current mode: Deep Work (52 min remaining).
    3 messages queued: Bob (work question), Unknown +1-555-9999
@@ -1363,7 +1363,7 @@ Content-Type: application/json
 
 3. **Vacation Mode:**
    ```
-   You: "Babbage, vacation mode until Monday. Backup: Dave"
+   You: "your assistant, vacation mode until Monday. Backup: Dave"
 
    ${assistantName}: "Vacation mode activated until Feb 3. Urgent
    matters will be directed to Dave at +1-555-DAVE. Safe
@@ -1400,7 +1400,7 @@ Content-Type: application/json
 
 **Implementation:**
 ```javascript
-const SHADOW_MODE = process.env.BABBAGE_SHADOW_MODE === 'true';
+const SHADOW_MODE = process.env.ANTENNA_SHADOW_MODE === 'true';
 
 if (SHADOW_MODE) {
   // Process everything normally BUT
@@ -1421,7 +1421,7 @@ if (SHADOW_MODE) {
 ```
 Day 1-3: Shadow mode ON
   → Process all incoming SMS
-  → Log what Babbage WOULD do
+  → Log what your assistant WOULD do
   → Send Telegram: "Shadow report: Here's what I would have sent..."
   → You review decisions
 
@@ -1438,7 +1438,7 @@ Day 6-7: Confidence check
 
 Day 8+: Live mode
   → Shadow mode OFF
-  → Babbage sends real SMS
+  → your assistant sends real SMS
   → Continue monitoring via Telegram briefings
 ```
 
@@ -1502,9 +1502,9 @@ const scenarios = [
     name: 'conversation_thread',
     exchanges: [
       { from: TEST_WORK, text: 'Can you send the proposal?' },
-      { expect_babbage: 'Which proposal?' },
+      { expect_assistant: 'Which proposal?' },
       { from: TEST_WORK, text: 'Q1 marketing' },
-      { expect_babbage: 'May I ask who you are?' },
+      { expect_assistant: 'May I ask who you are?' },
       { from: TEST_WORK, text: 'Jennifer from Acme' },
       { expect_telegram_briefing: true, expect_state: 'awaiting_human' }
     ]
@@ -1546,7 +1546,7 @@ npm run test:sms:scenarios
 
 ### Integration Tests
 - [ ] Webhook receives and parses correctly
-- [ ] Babbage agent processes message end-to-end
+- [ ] your assistant agent processes message end-to-end
 - [ ] SMS sends successfully via gateway
 - [ ] Telegram notifications deliver
 - [ ] Thread state persists across messages
@@ -1573,7 +1573,7 @@ npm run test:sms:scenarios
 | **Tailscale VPN** | Disconnects, phone loses connection | Gateway heartbeat missing >2min | Auto-reconnect on phone | Forward SMS to your phone directly |
 | **SMS Gateway App** | Crashes, stops forwarding | No webhook received for >5min | App auto-restart | Phone native SMS notifications resume |
 | **OpenClaw Container** | Crashes, OOM, exits | Docker health check fails | Auto-restart via Docker/systemd | Queue messages in gateway, process when back |
-| **Babbage Agent** | LLM timeout, API error | Agent run exceeds 30s | Retry with exponential backoff | Fall back to keyword-based rules |
+| **your assistant Agent** | LLM timeout, API error | Agent run exceeds 30s | Retry with exponential backoff | Fall back to keyword-based rules |
 | **Telegram API** | Rate limited, blocked | Send fails, HTTP 429 | Queue notifications, retry later | Fallback to SMS command channel |
 | **SQLite Context DB** | Corruption, locked | DB query fails | Rebuild from message history | Operate stateless (no thread memory) |
 | **SMS Send Failure** | Gateway API down | HTTP error on send | Retry 3x with backoff | Log failure, alert via Telegram |
@@ -1642,20 +1642,20 @@ services:
       start_period: 40s
 ```
 
-**Babbage Watchdog:**
+**your assistant Watchdog:**
 ```javascript
-// If Babbage doesn't respond within 2 minutes
+// If your assistant doesn't respond within 2 minutes
 const PROCESSING_TIMEOUT = 120000; // 2 minutes
 
 setTimeout(() => {
   if (!smsProcessed) {
-    log.error('Babbage timeout - falling back to direct delivery');
+    log.error('your assistant timeout - falling back to direct delivery');
 
     // Send original SMS to your phone
     sendDirectSMS(YOUR_PHONE, `
       Fwd from ${senderName}: ${originalMessage}
 
-      [Babbage failed to process - manual handling required]
+      [your assistant failed to process - manual handling required]
     `);
 
     // Alert via Telegram
@@ -1699,7 +1699,7 @@ Degraded: Queue briefings in local file
 Fallback: Send SMS to your phone with summary
 
 Example:
-"Babbage Summary (Telegram down):
+"your assistant Summary (Telegram down):
 - 3 messages deflected
 - 1 VIP (Alice) - held for you
 - Queue: ~/.openclaw/telegram-queue.json"
@@ -1758,7 +1758,7 @@ sendTelegram(`Recovery complete. Processed ${queuedMessages.length} queued messa
 - Basic message routing
 
 **Days 3-5: Shadow Mode Testing**
-- Enable `BABBAGE_SHADOW_MODE=true`
+- Enable `ANTENNA_SHADOW_MODE=true`
 - Process all messages without sending replies
 - Log decisions to Telegram for review
 - Run automated test scenarios
@@ -1776,7 +1776,7 @@ sendTelegram(`Recovery complete. Processed ${queuedMessages.length} queued messa
 - Multi-factor urgency scoring
 - Conversation threading
 - Context-aware response crafting
-- Babbage persona implementation
+- your assistant persona implementation
 
 **Days 4-5: State Management**
 - Immersion mode
@@ -1869,14 +1869,16 @@ sendTelegram(`Recovery complete. Processed ${queuedMessages.length} queued messa
 
 ## Quick Start Commands
 
-Once implemented, interact with Babbage via:
+Once implemented, interact with your assistant via:
 
 **SMS Commands (from your phone):**
-- `babbage status` - Check current mode
-- `babbage deep 2h` - Enable deep work for 2 hours
-- `babbage vacation until monday` - Set vacation mode
-- `babbage allow +1234567890` - Temporarily allow a number
-- `babbage summary` - Get queued messages summary
+- `<assistant> status` - Check current mode
+- `<assistant> deep 2h` - Enable deep work for 2 hours
+- `<assistant> vacation until monday` - Set vacation mode
+- `<assistant> allow +1234567890` - Temporarily allow a number
+- `<assistant> summary` - Get queued messages summary
+
+*Replace `<assistant>` with your configured identity name (e.g., "Jarvis", "Alfred", etc.)*
 
 **CLI Commands (from server):**
 - `openclaw sms vips add +1234567890 "Alice" --priority 1`
