@@ -1,0 +1,57 @@
+{
+  "name": "antenna",
+  "version": "0.1.0",
+  "description": "Intelligent SMS gateway extension for OpenClaw - sensing signals, protecting focus",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "oxlint .",
+    "format": "oxfmt ."
+  },
+  "keywords": [
+    "openclaw",
+    "extension",
+    "sms",
+    "butler",
+    "assistant",
+    "automation",
+    "jarvis"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/antenna.git"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "peerDependencies": {
+    "openclaw": "^2026.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.0.0",
+    "oxlint": "latest",
+    "oxfmt": "latest"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0"
+  },
+  "openclaw": {
+    "extension": {
+      "name": "Antenna",
+      "description": "Intelligent SMS gateway - sensing signals, protecting focus",
+      "version": "0.1.0",
+      "hooks": {
+        "webhook": "/sms/inbound"
+      }
+    }
+  }
+}
