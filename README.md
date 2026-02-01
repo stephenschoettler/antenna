@@ -78,7 +78,7 @@ Antenna is an OpenClaw extension that acts as your intelligent SMS gateway - rec
 ```
 
 **Android SMS Gateway App Setup:**
-- Install: [SMS Gateway](https://smsgateway.me/) or similar
+- Install: [SMS Gateway](https://sms-gateway.app/) or similar
 - Configure webhook URL: `http://[Tailscale-IP]:18789/sms/inbound`
 - Set authentication token
 - Enable "Forward all messages"
