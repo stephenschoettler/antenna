@@ -1,0 +1,113 @@
+version: '3.8'
+
+services:
+  # RabbitMQ message broker for DekuSMS bidirectional SMS
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: antenna-rabbitmq
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"   # AMQP port
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: deku_user
+      RABBITMQ_DEFAULT_PASS: change_this_password
+      RABBITMQ_DEFAULT_VHOST: /
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - antenna-network
+    restart: unless-stopped
+
+  # Antenna webhook server
+  antenna:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: antenna-server
+    ports:
+      - "3000:3000"
+    environment:
+      # Telegram
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID}
+      
+      # RabbitMQ
+      RABBITMQ_URL: amqp://deku_user:change_this_password@rabbitmq:5672
+      
+      # Twilio (optional)
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER:-}
+      
+      # SMTP (optional)
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      EMAIL_FROM: ${EMAIL_FROM:-noreply@example.com}
+      
+      # Anthropic (optional)
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      
+      # Server
+      PORT: 3000
+      NODE_ENV: ${NODE_ENV:-production}
+      ANTENNA_CONFIG_PATH: /app/antenna.config.yaml
+    volumes:
+      # Config and data persistence
+      - ./antenna.config.yaml:/app/antenna.config.yaml:ro
+      - antenna_data:/app/data
+      - ./logs:/app/logs
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - antenna-network
+    restart: unless-stopped
+
+  # Optional: RabbitMQ queue initializer
+  rabbitmq-init:
+    image: rabbitmq:3.12-management-alpine
+    container_name: antenna-rabbitmq-init
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: deku_user
+      RABBITMQ_PASS: change_this_password
+    command: >
+      sh -c "
+        sleep 10 &&
+        rabbitmqadmin -H rabbitmq -u deku_user -p change_this_password declare queue name=sms.inbound durable=true &&
+        rabbitmqadmin -H rabbitmq -u deku_user -p change_this_password declare queue name=sms.outbound durable=true &&
+        echo '✅ Queues initialized' &&
+        exit 0
+      "
+    networks:
+      - antenna-network
+    restart: "no"
+
+networks:
+  antenna-network:
+    driver: bridge
+
+volumes:
+  rabbitmq_data:
+    driver: local
+  antenna_data:
+    driver: local

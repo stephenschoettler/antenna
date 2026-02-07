@@ -1,0 +1,58 @@
+# Antenna Configuration
+# Triage settings for Siphon Engine integration
+
+# VIP tier definitions
+# Tier 1: Critical/urgent contacts (founders, key customers, emergency)
+# Tier 2: Important contacts (team, investors, partners)
+# Tier 3: Default tier for everyone else
+vips:
+  tier1:
+    - "+15551234567"
+    - "ceo@example.com"
+    - "founder@startup.io"
+  tier2:
+    - "+15559876543"
+    - "team@example.com"
+    - "investor@vc.fund"
+  tier3: "default"
+
+# Triage thresholds (0-100 urgency score)
+# Messages scoring above these values get the corresponding priority
+thresholds:
+  urgent: 75   # Critical - immediate notification
+  high: 50     # Important - notify soon
+  normal: 25   # Standard - queue for review
+
+# AI persona for auto-responses
+persona: "Babbage"
+
+# LLM provider configuration
+# Supported providers: 'claude' or 'template'
+# If not specified or provider is 'template', uses fallback templates
+llm:
+  provider: "template"  # or "claude" for AI-powered responses
+  # apiKey: "sk-ant-..."  # Required when provider is "claude"
+  # model: "claude-3-5-sonnet-20241022"  # Optional, defaults to latest Sonnet
+
+# Example with Claude provider (uncomment to use):
+# llm:
+#   provider: "claude"
+#   apiKey: "${ANTHROPIC_API_KEY}"  # Can use env var reference
+#   model: "claude-3-5-sonnet-20241022"
+
+# SMS Configuration
+# Supported providers: 'dekusms' (RabbitMQ) or 'twilio'
+sms:
+  provider: "dekusms"  # or "twilio"
+  
+  # DekuSMS configuration (RabbitMQ-based)
+  dekusms:
+    rabbitmq_url: "amqp://localhost:5672"
+    queue_name: "sms_outbound"
+    callback_queue: "sms_callbacks"
+  
+  # Twilio configuration (traditional cloud SMS)
+  # twilio:
+  #   account_sid: "${TWILIO_ACCOUNT_SID}"
+  #   auth_token: "${TWILIO_AUTH_TOKEN}"
+  #   from_number: "${TWILIO_PHONE_NUMBER}"

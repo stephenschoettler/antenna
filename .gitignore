@@ -1,54 +1,5 @@
-# Dependencies
-node_modules/
-.pnpm-store/
-.npm/
-
-# Build output
-dist/
-*.tsbuildinfo
-
-# Environment
+node_modules
+dist
 .env
-.env.local
-.env.*.local
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Editor
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Testing
-coverage/
-.vitest/
-
-# Logs
 *.log
-npm-debug.log*
-pnpm-debug.log*
-
-# Runtime data
-*.pid
-*.seed
-*.pid.lock
-
-# SQLite databases (exclude test/dev databases)
-*.db
-*.db-journal
-*.db-shm
-*.db-wal
-
-# OpenClaw specific
-.openclaw/
-sms-*.json
-sms-*.db
-
-# Temporary files
-tmp/
-temp/
-*.tmp
+.DS_Store
